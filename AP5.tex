@@ -1,0 +1,1428 @@
+\documentclass[11pt]{article}
+
+    \usepackage[breakable]{tcolorbox}
+    \usepackage{parskip} % Stop auto-indenting (to mimic markdown behaviour)
+    
+
+    % Basic figure setup, for now with no caption control since it's done
+    % automatically by Pandoc (which extracts ![](path) syntax from Markdown).
+    \usepackage{graphicx}
+    % Maintain compatibility with old templates. Remove in nbconvert 6.0
+    \let\Oldincludegraphics\includegraphics
+    % Ensure that by default, figures have no caption (until we provide a
+    % proper Figure object with a Caption API and a way to capture that
+    % in the conversion process - todo).
+    \usepackage{caption}
+    \DeclareCaptionFormat{nocaption}{}
+    \captionsetup{format=nocaption,aboveskip=0pt,belowskip=0pt}
+
+    \usepackage{float}
+    \floatplacement{figure}{H} % forces figures to be placed at the correct location
+    \usepackage{xcolor} % Allow colors to be defined
+    \usepackage{enumerate} % Needed for markdown enumerations to work
+    \usepackage{geometry} % Used to adjust the document margins
+    \usepackage{amsmath} % Equations
+    \usepackage{amssymb} % Equations
+    \usepackage{textcomp} % defines textquotesingle
+    % Hack from http://tex.stackexchange.com/a/47451/13684:
+    \AtBeginDocument{%
+        \def\PYZsq{\textquotesingle}% Upright quotes in Pygmentized code
+    }
+    \usepackage{upquote} % Upright quotes for verbatim code
+    \usepackage{eurosym} % defines \euro
+
+    \usepackage{iftex}
+    \ifPDFTeX
+        \usepackage[T1]{fontenc}
+        \IfFileExists{alphabeta.sty}{
+              \usepackage{alphabeta}
+          }{
+              \usepackage[mathletters]{ucs}
+              \usepackage[utf8x]{inputenc}
+          }
+    \else
+        \usepackage{fontspec}
+        \usepackage{unicode-math}
+    \fi
+
+    \usepackage{fancyvrb} % verbatim replacement that allows latex
+    \usepackage{grffile} % extends the file name processing of package graphics
+                         % to support a larger range
+    \makeatletter % fix for old versions of grffile with XeLaTeX
+    \@ifpackagelater{grffile}{2019/11/01}
+    {
+      % Do nothing on new versions
+    }
+    {
+      \def\Gread@@xetex#1{%
+        \IfFileExists{"\Gin@base".bb}%
+        {\Gread@eps{\Gin@base.bb}}%
+        {\Gread@@xetex@aux#1}%
+      }
+    }
+    \makeatother
+    \usepackage[Export]{adjustbox} % Used to constrain images to a maximum size
+    \adjustboxset{max size={0.9\linewidth}{0.9\paperheight}}
+
+    % The hyperref package gives us a pdf with properly built
+    % internal navigation ('pdf bookmarks' for the table of contents,
+    % internal cross-reference links, web links for URLs, etc.)
+    \usepackage{hyperref}
+    % The default LaTeX title has an obnoxious amount of whitespace. By default,
+    % titling removes some of it. It also provides customization options.
+    \usepackage{titling}
+    \usepackage{longtable} % longtable support required by pandoc >1.10
+    \usepackage{booktabs}  % table support for pandoc > 1.12.2
+    \usepackage{array}     % table support for pandoc >= 2.11.3
+    \usepackage{calc}      % table minipage width calculation for pandoc >= 2.11.1
+    \usepackage[inline]{enumitem} % IRkernel/repr support (it uses the enumerate* environment)
+    \usepackage[normalem]{ulem} % ulem is needed to support strikethroughs (\sout)
+                                % normalem makes italics be italics, not underlines
+    \usepackage{mathrsfs}
+    
+
+    
+    % Colors for the hyperref package
+    \definecolor{urlcolor}{rgb}{0,.145,.698}
+    \definecolor{linkcolor}{rgb}{.71,0.21,0.01}
+    \definecolor{citecolor}{rgb}{.12,.54,.11}
+
+    % ANSI colors
+    \definecolor{ansi-black}{HTML}{3E424D}
+    \definecolor{ansi-black-intense}{HTML}{282C36}
+    \definecolor{ansi-red}{HTML}{E75C58}
+    \definecolor{ansi-red-intense}{HTML}{B22B31}
+    \definecolor{ansi-green}{HTML}{00A250}
+    \definecolor{ansi-green-intense}{HTML}{007427}
+    \definecolor{ansi-yellow}{HTML}{DDB62B}
+    \definecolor{ansi-yellow-intense}{HTML}{B27D12}
+    \definecolor{ansi-blue}{HTML}{208FFB}
+    \definecolor{ansi-blue-intense}{HTML}{0065CA}
+    \definecolor{ansi-magenta}{HTML}{D160C4}
+    \definecolor{ansi-magenta-intense}{HTML}{A03196}
+    \definecolor{ansi-cyan}{HTML}{60C6C8}
+    \definecolor{ansi-cyan-intense}{HTML}{258F8F}
+    \definecolor{ansi-white}{HTML}{C5C1B4}
+    \definecolor{ansi-white-intense}{HTML}{A1A6B2}
+    \definecolor{ansi-default-inverse-fg}{HTML}{FFFFFF}
+    \definecolor{ansi-default-inverse-bg}{HTML}{000000}
+
+    % common color for the border for error outputs.
+    \definecolor{outerrorbackground}{HTML}{FFDFDF}
+
+    % commands and environments needed by pandoc snippets
+    % extracted from the output of `pandoc -s`
+    \providecommand{\tightlist}{%
+      \setlength{\itemsep}{0pt}\setlength{\parskip}{0pt}}
+    \DefineVerbatimEnvironment{Highlighting}{Verbatim}{commandchars=\\\{\}}
+    % Add ',fontsize=\small' for more characters per line
+    \newenvironment{Shaded}{}{}
+    \newcommand{\KeywordTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\DataTypeTok}[1]{\textcolor[rgb]{0.56,0.13,0.00}{{#1}}}
+    \newcommand{\DecValTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\BaseNTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\FloatTok}[1]{\textcolor[rgb]{0.25,0.63,0.44}{{#1}}}
+    \newcommand{\CharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\StringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\CommentTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textit{{#1}}}}
+    \newcommand{\OtherTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{{#1}}}
+    \newcommand{\AlertTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\FunctionTok}[1]{\textcolor[rgb]{0.02,0.16,0.49}{{#1}}}
+    \newcommand{\RegionMarkerTok}[1]{{#1}}
+    \newcommand{\ErrorTok}[1]{\textcolor[rgb]{1.00,0.00,0.00}{\textbf{{#1}}}}
+    \newcommand{\NormalTok}[1]{{#1}}
+
+    % Additional commands for more recent versions of Pandoc
+    \newcommand{\ConstantTok}[1]{\textcolor[rgb]{0.53,0.00,0.00}{{#1}}}
+    \newcommand{\SpecialCharTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\VerbatimStringTok}[1]{\textcolor[rgb]{0.25,0.44,0.63}{{#1}}}
+    \newcommand{\SpecialStringTok}[1]{\textcolor[rgb]{0.73,0.40,0.53}{{#1}}}
+    \newcommand{\ImportTok}[1]{{#1}}
+    \newcommand{\DocumentationTok}[1]{\textcolor[rgb]{0.73,0.13,0.13}{\textit{{#1}}}}
+    \newcommand{\AnnotationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\CommentVarTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\VariableTok}[1]{\textcolor[rgb]{0.10,0.09,0.49}{{#1}}}
+    \newcommand{\ControlFlowTok}[1]{\textcolor[rgb]{0.00,0.44,0.13}{\textbf{{#1}}}}
+    \newcommand{\OperatorTok}[1]{\textcolor[rgb]{0.40,0.40,0.40}{{#1}}}
+    \newcommand{\BuiltInTok}[1]{{#1}}
+    \newcommand{\ExtensionTok}[1]{{#1}}
+    \newcommand{\PreprocessorTok}[1]{\textcolor[rgb]{0.74,0.48,0.00}{{#1}}}
+    \newcommand{\AttributeTok}[1]{\textcolor[rgb]{0.49,0.56,0.16}{{#1}}}
+    \newcommand{\InformationTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+    \newcommand{\WarningTok}[1]{\textcolor[rgb]{0.38,0.63,0.69}{\textbf{\textit{{#1}}}}}
+
+
+    % Define a nice break command that doesn't care if a line doesn't already
+    % exist.
+    \def\br{\hspace*{\fill} \\* }
+    % Math Jax compatibility definitions
+    \def\gt{>}
+    \def\lt{<}
+    \let\Oldtex\TeX
+    \let\Oldlatex\LaTeX
+    \renewcommand{\TeX}{\textrm{\Oldtex}}
+    \renewcommand{\LaTeX}{\textrm{\Oldlatex}}
+    % Document parameters
+    % Document title
+    \title{AP5}
+    
+    
+    
+    
+    
+    
+    
+% Pygments definitions
+\makeatletter
+\def\PY@reset{\let\PY@it=\relax \let\PY@bf=\relax%
+    \let\PY@ul=\relax \let\PY@tc=\relax%
+    \let\PY@bc=\relax \let\PY@ff=\relax}
+\def\PY@tok#1{\csname PY@tok@#1\endcsname}
+\def\PY@toks#1+{\ifx\relax#1\empty\else%
+    \PY@tok{#1}\expandafter\PY@toks\fi}
+\def\PY@do#1{\PY@bc{\PY@tc{\PY@ul{%
+    \PY@it{\PY@bf{\PY@ff{#1}}}}}}}
+\def\PY#1#2{\PY@reset\PY@toks#1+\relax+\PY@do{#2}}
+
+\@namedef{PY@tok@w}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.73,0.73}{##1}}}
+\@namedef{PY@tok@c}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cp}{\def\PY@tc##1{\textcolor[rgb]{0.61,0.40,0.00}{##1}}}
+\@namedef{PY@tok@k}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kt}{\def\PY@tc##1{\textcolor[rgb]{0.69,0.00,0.25}{##1}}}
+\@namedef{PY@tok@o}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ow}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@nb}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nf}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@nn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@ne}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.80,0.25,0.22}{##1}}}
+\@namedef{PY@tok@nv}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@no}{\def\PY@tc##1{\textcolor[rgb]{0.53,0.00,0.00}{##1}}}
+\@namedef{PY@tok@nl}{\def\PY@tc##1{\textcolor[rgb]{0.46,0.46,0.00}{##1}}}
+\@namedef{PY@tok@ni}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@na}{\def\PY@tc##1{\textcolor[rgb]{0.41,0.47,0.13}{##1}}}
+\@namedef{PY@tok@nt}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@nd}{\def\PY@tc##1{\textcolor[rgb]{0.67,0.13,1.00}{##1}}}
+\@namedef{PY@tok@s}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sd}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@si}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@se}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.67,0.36,0.12}{##1}}}
+\@namedef{PY@tok@sr}{\def\PY@tc##1{\textcolor[rgb]{0.64,0.35,0.47}{##1}}}
+\@namedef{PY@tok@ss}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sx}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@m}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@gh}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gu}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.50,0.00,0.50}{##1}}}
+\@namedef{PY@tok@gd}{\def\PY@tc##1{\textcolor[rgb]{0.63,0.00,0.00}{##1}}}
+\@namedef{PY@tok@gi}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.52,0.00}{##1}}}
+\@namedef{PY@tok@gr}{\def\PY@tc##1{\textcolor[rgb]{0.89,0.00,0.00}{##1}}}
+\@namedef{PY@tok@ge}{\let\PY@it=\textit}
+\@namedef{PY@tok@gs}{\let\PY@bf=\textbf}
+\@namedef{PY@tok@ges}{\let\PY@bf=\textbf\let\PY@it=\textit}
+\@namedef{PY@tok@gp}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,0.50}{##1}}}
+\@namedef{PY@tok@go}{\def\PY@tc##1{\textcolor[rgb]{0.44,0.44,0.44}{##1}}}
+\@namedef{PY@tok@gt}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.27,0.87}{##1}}}
+\@namedef{PY@tok@err}{\def\PY@bc##1{{\setlength{\fboxsep}{\string -\fboxrule}\fcolorbox[rgb]{1.00,0.00,0.00}{1,1,1}{\strut ##1}}}}
+\@namedef{PY@tok@kc}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kd}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kn}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@kr}{\let\PY@bf=\textbf\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@bp}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.50,0.00}{##1}}}
+\@namedef{PY@tok@fm}{\def\PY@tc##1{\textcolor[rgb]{0.00,0.00,1.00}{##1}}}
+\@namedef{PY@tok@vc}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vg}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vi}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@vm}{\def\PY@tc##1{\textcolor[rgb]{0.10,0.09,0.49}{##1}}}
+\@namedef{PY@tok@sa}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sb}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sc}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@dl}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s2}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@sh}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@s1}{\def\PY@tc##1{\textcolor[rgb]{0.73,0.13,0.13}{##1}}}
+\@namedef{PY@tok@mb}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mf}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mh}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mi}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@il}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@mo}{\def\PY@tc##1{\textcolor[rgb]{0.40,0.40,0.40}{##1}}}
+\@namedef{PY@tok@ch}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cm}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cpf}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@c1}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+\@namedef{PY@tok@cs}{\let\PY@it=\textit\def\PY@tc##1{\textcolor[rgb]{0.24,0.48,0.48}{##1}}}
+
+\def\PYZbs{\char`\\}
+\def\PYZus{\char`\_}
+\def\PYZob{\char`\{}
+\def\PYZcb{\char`\}}
+\def\PYZca{\char`\^}
+\def\PYZam{\char`\&}
+\def\PYZlt{\char`\<}
+\def\PYZgt{\char`\>}
+\def\PYZsh{\char`\#}
+\def\PYZpc{\char`\%}
+\def\PYZdl{\char`\$}
+\def\PYZhy{\char`\-}
+\def\PYZsq{\char`\'}
+\def\PYZdq{\char`\"}
+\def\PYZti{\char`\~}
+% for compatibility with earlier versions
+\def\PYZat{@}
+\def\PYZlb{[}
+\def\PYZrb{]}
+\makeatother
+
+
+    % For linebreaks inside Verbatim environment from package fancyvrb.
+    \makeatletter
+        \newbox\Wrappedcontinuationbox
+        \newbox\Wrappedvisiblespacebox
+        \newcommand*\Wrappedvisiblespace {\textcolor{red}{\textvisiblespace}}
+        \newcommand*\Wrappedcontinuationsymbol {\textcolor{red}{\llap{\tiny$\m@th\hookrightarrow$}}}
+        \newcommand*\Wrappedcontinuationindent {3ex }
+        \newcommand*\Wrappedafterbreak {\kern\Wrappedcontinuationindent\copy\Wrappedcontinuationbox}
+        % Take advantage of the already applied Pygments mark-up to insert
+        % potential linebreaks for TeX processing.
+        %        {, <, #, %, $, ' and ": go to next line.
+        %        _, }, ^, &, >, - and ~: stay at end of broken line.
+        % Use of \textquotesingle for straight quote.
+        \newcommand*\Wrappedbreaksatspecials {%
+            \def\PYGZus{\discretionary{\char`\_}{\Wrappedafterbreak}{\char`\_}}%
+            \def\PYGZob{\discretionary{}{\Wrappedafterbreak\char`\{}{\char`\{}}%
+            \def\PYGZcb{\discretionary{\char`\}}{\Wrappedafterbreak}{\char`\}}}%
+            \def\PYGZca{\discretionary{\char`\^}{\Wrappedafterbreak}{\char`\^}}%
+            \def\PYGZam{\discretionary{\char`\&}{\Wrappedafterbreak}{\char`\&}}%
+            \def\PYGZlt{\discretionary{}{\Wrappedafterbreak\char`\<}{\char`\<}}%
+            \def\PYGZgt{\discretionary{\char`\>}{\Wrappedafterbreak}{\char`\>}}%
+            \def\PYGZsh{\discretionary{}{\Wrappedafterbreak\char`\#}{\char`\#}}%
+            \def\PYGZpc{\discretionary{}{\Wrappedafterbreak\char`\%}{\char`\%}}%
+            \def\PYGZdl{\discretionary{}{\Wrappedafterbreak\char`\$}{\char`\$}}%
+            \def\PYGZhy{\discretionary{\char`\-}{\Wrappedafterbreak}{\char`\-}}%
+            \def\PYGZsq{\discretionary{}{\Wrappedafterbreak\textquotesingle}{\textquotesingle}}%
+            \def\PYGZdq{\discretionary{}{\Wrappedafterbreak\char`\"}{\char`\"}}%
+            \def\PYGZti{\discretionary{\char`\~}{\Wrappedafterbreak}{\char`\~}}%
+        }
+        % Some characters . , ; ? ! / are not pygmentized.
+        % This macro makes them "active" and they will insert potential linebreaks
+        \newcommand*\Wrappedbreaksatpunct {%
+            \lccode`\~`\.\lowercase{\def~}{\discretionary{\hbox{\char`\.}}{\Wrappedafterbreak}{\hbox{\char`\.}}}%
+            \lccode`\~`\,\lowercase{\def~}{\discretionary{\hbox{\char`\,}}{\Wrappedafterbreak}{\hbox{\char`\,}}}%
+            \lccode`\~`\;\lowercase{\def~}{\discretionary{\hbox{\char`\;}}{\Wrappedafterbreak}{\hbox{\char`\;}}}%
+            \lccode`\~`\:\lowercase{\def~}{\discretionary{\hbox{\char`\:}}{\Wrappedafterbreak}{\hbox{\char`\:}}}%
+            \lccode`\~`\?\lowercase{\def~}{\discretionary{\hbox{\char`\?}}{\Wrappedafterbreak}{\hbox{\char`\?}}}%
+            \lccode`\~`\!\lowercase{\def~}{\discretionary{\hbox{\char`\!}}{\Wrappedafterbreak}{\hbox{\char`\!}}}%
+            \lccode`\~`\/\lowercase{\def~}{\discretionary{\hbox{\char`\/}}{\Wrappedafterbreak}{\hbox{\char`\/}}}%
+            \catcode`\.\active
+            \catcode`\,\active
+            \catcode`\;\active
+            \catcode`\:\active
+            \catcode`\?\active
+            \catcode`\!\active
+            \catcode`\/\active
+            \lccode`\~`\~
+        }
+    \makeatother
+
+    \let\OriginalVerbatim=\Verbatim
+    \makeatletter
+    \renewcommand{\Verbatim}[1][1]{%
+        %\parskip\z@skip
+        \sbox\Wrappedcontinuationbox {\Wrappedcontinuationsymbol}%
+        \sbox\Wrappedvisiblespacebox {\FV@SetupFont\Wrappedvisiblespace}%
+        \def\FancyVerbFormatLine ##1{\hsize\linewidth
+            \vtop{\raggedright\hyphenpenalty\z@\exhyphenpenalty\z@
+                \doublehyphendemerits\z@\finalhyphendemerits\z@
+                \strut ##1\strut}%
+        }%
+        % If the linebreak is at a space, the latter will be displayed as visible
+        % space at end of first line, and a continuation symbol starts next line.
+        % Stretch/shrink are however usually zero for typewriter font.
+        \def\FV@Space {%
+            \nobreak\hskip\z@ plus\fontdimen3\font minus\fontdimen4\font
+            \discretionary{\copy\Wrappedvisiblespacebox}{\Wrappedafterbreak}
+            {\kern\fontdimen2\font}%
+        }%
+
+        % Allow breaks at special characters using \PYG... macros.
+        \Wrappedbreaksatspecials
+        % Breaks at punctuation characters . , ; ? ! and / need catcode=\active
+        \OriginalVerbatim[#1,codes*=\Wrappedbreaksatpunct]%
+    }
+    \makeatother
+
+    % Exact colors from NB
+    \definecolor{incolor}{HTML}{303F9F}
+    \definecolor{outcolor}{HTML}{D84315}
+    \definecolor{cellborder}{HTML}{CFCFCF}
+    \definecolor{cellbackground}{HTML}{F7F7F7}
+
+    % prompt
+    \makeatletter
+    \newcommand{\boxspacing}{\kern\kvtcb@left@rule\kern\kvtcb@boxsep}
+    \makeatother
+    \newcommand{\prompt}[4]{
+        {\ttfamily\llap{{\color{#2}[#3]:\hspace{3pt}#4}}\vspace{-\baselineskip}}
+    }
+    
+
+    
+    % Prevent overflowing lines due to hard-to-break entities
+    \sloppy
+    % Setup hyperref package
+    \hypersetup{
+      breaklinks=true,  % so long urls are correctly broken across lines
+      colorlinks=true,
+      urlcolor=urlcolor,
+      linkcolor=linkcolor,
+      citecolor=citecolor,
+      }
+    % Slightly bigger margins than the latex defaults
+    
+    \geometry{verbose,tmargin=1in,bmargin=1in,lmargin=1in,rmargin=1in}
+    
+    
+
+\begin{document}
+    
+    \maketitle
+    
+    
+
+    
+    \hypertarget{exercuxedcio-1}{%
+\section{Exercício 1}\label{exercuxedcio-1}}
+
+    Façamos nossa função de decomposição \(QR\) com Gram-Schmidt.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{88}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função de decomposição QR de Gram\PYZhy{}Schmidt}
+\PY{k}{function}\PY{+w}{ }\PY{n+nf}{[Q, R] = qr\PYZus{}GS}\PY{p}{(}A\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Pegando as dimensões da A}
+\PY{+w}{    }\PY{p}{[}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{size}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Inicializando as matrizes Q e R}
+\PY{+w}{    }\PY{n}{Q}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+\PY{+w}{    }\PY{n}{R}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Para cada coluna...}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{n}
+\PY{+w}{        }\PY{c+c1}{// Inicializa o vetor v como a coluna de A}
+\PY{+w}{        }\PY{n}{v}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Se não for a primeira coluna...}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{o}{\PYZgt{}}\PY{+w}{ }\PY{l+m+mi}{1}\PY{+w}{ }\PY{n+nb}{then}
+\PY{+w}{            }\PY{c+c1}{// Calcula o termo de projeção de v}
+\PY{+w}{            }\PY{n}{R}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{:(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{),}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{p}{(}\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)))}\PY{o}{\PYZsq{}}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{A}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{            }\PY{c+c1}{// Calcula a ortogonalização de v}
+\PY{+w}{            }\PY{n}{v}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{v}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{))}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{R}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{:(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{),}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{c+c1}{// Salva o termo da diagonal de R como a norma de v}
+\PY{+w}{        }\PY{n}{R}\PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{v}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Salva a coluna de Q como o vetor v normalizado}
+\PY{+w}{        }\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{v}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{n}{R}\PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Vamos testá-la com algumas matrizes retangulares, calculando os erros do
+produto \(QR\) com a matriz \(A\) e da ortogonalidade da matriz \(Q\).
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{89}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Gerando uma matriz}
+\PY{n}{A1}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{*}\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{)}
+\PY{c+c1}{// Calculando a decomposição QR}
+\PY{p}{[}\PY{n}{Q1}\PY{p}{,}\PY{+w}{ }\PY{n}{R1}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{A1}\PY{p}{);}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{*}\PY{n}{R1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A1  =
+   2.   9.
+  -2.   7.
+   4.  -3.
+
+  "norm(Q*R - A)"
+
+   1.776D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.292D-16
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{90}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A2}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{*}\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{)}
+\PY{p}{[}\PY{n}{Q2}\PY{p}{,}\PY{+w}{ }\PY{n}{R2}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{A2}\PY{p}{);}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{*}\PY{n}{R2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A2  =
+   8.   9.    5.
+  -8.   10.   1.
+   1.   2.    5.
+   1.   10.  -9.
+
+  "norm(Q*R - A)"
+
+   1.891D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.562D-16
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{91}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A3}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{(}\PY{l+m+mi}{20}\PY{o}{*}\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{)}
+\PY{p}{[}\PY{n}{Q3}\PY{p}{,}\PY{+w}{ }\PY{n}{R3}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{A3}\PY{p}{);}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{*}\PY{n}{R3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A3  =
+  -2.   8.   6.  -5.   4.
+  -8.   5.   4.   4.  -4.
+  -5.   1.  -8.   9.  -7.
+  -3.  -2.  -5.   0.   4.
+  -7.   8.   5.  -5.  -1.
+
+  "norm(Q*R - A)"
+
+   8.882D-16
+
+  "norm(Q\^{}T*Q - I)"
+
+   6.279D-16
+    \end{Verbatim}
+
+    Parece que nossa função está funcionando bem.
+
+\hypertarget{exercuxedcio-2}{%
+\section{Exercício 2}\label{exercuxedcio-2}}
+
+    Agora, façamos a função da decomposição \(QR\) com Gram-Schmidt
+modificado. Infelizmente, para essa versão, não é possível calcular o
+loop interno matricialmente devido à atualização do vetor \(v\), sendo
+necessário um loop \texttt{for}.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{92}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função de decomposição QR de Gram\PYZhy{}Schmidt}
+\PY{k}{function}\PY{+w}{ }\PY{n+nf}{[Q, R] = qr\PYZus{}GSM}\PY{p}{(}A\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Pegando as dimensões da A}
+\PY{+w}{    }\PY{p}{[}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{size}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Inicializando as matrizes Q e R}
+\PY{+w}{    }\PY{n}{Q}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+\PY{+w}{    }\PY{n}{R}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{n}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Para cada coluna...}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{n}
+\PY{+w}{        }\PY{c+c1}{// Inicializa o vetor v como a coluna de A}
+\PY{+w}{        }\PY{n}{v}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Para cada linha...}
+\PY{+w}{        }\PY{k}{for}\PY{+w}{ }\PY{n}{i}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:(}\PY{n}{j}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{)}
+\PY{+w}{            }\PY{c+c1}{// Calcula o fator de projeção do v sobre qi}
+\PY{+w}{            }\PY{n}{R}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{n}{i}\PY{p}{)}\PY{o}{\PYZsq{}}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{v}
+\PY{+w}{            }\PY{c+c1}{// Ortogonaliza em relação ao qi}
+\PY{+w}{            }\PY{n}{v}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{v}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{R}\PY{p}{(}\PY{n}{i}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{n}{i}\PY{p}{)}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{c+c1}{// Salva o termo da diagonal de R como a norma de v}
+\PY{+w}{        }\PY{n}{R}\PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{v}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Salva a coluna de Q como o vetor v normalizado}
+\PY{+w}{        }\PY{n}{Q}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{v}\PY{+w}{ }\PY{o}{/}\PY{+w}{ }\PY{n}{R}\PY{p}{(}\PY{n}{j}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Vamos agora testá-la com as mesmas matrizes usadas no exercício
+anterior, comparando a precisão dos dois algoritmos.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{93}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Calculando a decomposição QR pelo GS modificado}
+\PY{p}{[}\PY{n}{QM1}\PY{p}{,}\PY{+w}{ }\PY{n}{RM1}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{A1}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Gram\PYZhy{}Schmidt ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{*}\PY{n}{R1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}========== Gram\PYZhy{}Schmidt modificado ==========\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1}\PY{o}{*}\PY{n}{RM1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Gram-Schmidt ================"
+
+  "norm(Q*R - A)"
+
+   1.776D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.292D-16
+
+  "========== Gram-Schmidt modificado =========="
+
+  "norm(Q*R - A)"
+
+   1.776D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.292D-16
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{94}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{[}\PY{n}{QM2}\PY{p}{,}\PY{+w}{ }\PY{n}{RM2}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{A2}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Gram\PYZhy{}Schmidt ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{*}\PY{n}{R2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}========== Gram\PYZhy{}Schmidt modificado ==========\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2}\PY{o}{*}\PY{n}{RM2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Gram-Schmidt ================"
+
+  "norm(Q*R - A)"
+
+   1.891D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.562D-16
+
+  "========== Gram-Schmidt modificado =========="
+
+  "norm(Q*R - A)"
+
+   1.891D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   2.562D-16
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{95}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{[}\PY{n}{QM3}\PY{p}{,}\PY{+w}{ }\PY{n}{RM3}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{A3}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Gram\PYZhy{}Schmidt ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{*}\PY{n}{R3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}========== Gram\PYZhy{}Schmidt modificado ==========\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q*R \PYZhy{} A)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM3}\PY{o}{*}\PY{n}{RM3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}norm(Q\PYZca{}T*Q \PYZhy{} I)\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM3}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Gram-Schmidt ================"
+
+  "norm(Q*R - A)"
+
+   8.882D-16
+
+  "norm(Q\^{}T*Q - I)"
+
+   6.279D-16
+
+  "========== Gram-Schmidt modificado =========="
+
+  "norm(Q*R - A)"
+
+   1.776D-15
+
+  "norm(Q\^{}T*Q - I)"
+
+   5.514D-16
+    \end{Verbatim}
+
+    Nota-se que, para matrizes comuns, os algoritmos obtiveram desempenhos
+bem similares, não variando muito o erro numérico tanto da aproximação
+da \(QR\) para a \(A\) quanto da ortogonalidade da \(Q\).
+
+    \hypertarget{exercuxedcio-4}{%
+\section{Exercício 4}\label{exercuxedcio-4}}
+
+    Agora, vamos escrever funções para calcular a decomposição \(QR\) de uma
+matriz com base no refletor de Householder. Primeiro, temos a versão
+normal do algoritmo escrita abaixo.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{96}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função da versão 1 do algoritmo de Householder para decomposição QR}
+\PY{k}{function}\PY{+w}{ }\PY{n+nf}{[U, R] = qr\PYZus{}House\PYZus{}v1}\PY{p}{(}A\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Pegando as dimensões da A}
+\PY{+w}{    }\PY{p}{[}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{size}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Inicializando a matriz U}
+\PY{+w}{    }\PY{n}{U}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Para cada coluna...}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{n}
+\PY{+w}{        }\PY{c+c1}{// Pega o vetor que queremos projetar sobre um eixo}
+\PY{+w}{        }\PY{n}{x}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Escolhe a melhor das duas projeções possíveis}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZgt{}}\PY{+w}{ }\PY{l+m+mi}{0}\PY{+w}{ }\PY{n+nb}{then}
+\PY{+w}{            }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{k}{else}
+\PY{+w}{            }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{c+c1}{// Calcula u normalizando x}
+\PY{+w}{        }\PY{n}{u}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{o}{/}\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Salva u na matriz U}
+\PY{+w}{        }\PY{n}{U}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{u}
+\PY{+w}{        }\PY{c+c1}{// Triangulariza a parte da matriz correspondente}
+\PY{+w}{        }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{u}\PY{o}{*}\PY{p}{(}\PY{n}{u}\PY{o}{\PYZsq{}}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{))}
+\PY{+w}{    }\PY{k}{end}
+\PY{+w}{    }\PY{c+c1}{// A R é a parte triangular superior da A}
+\PY{+w}{    }\PY{n}{R}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{triu}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Em seguida, vamos escrever uma versão modificada desse algoritmo, na
+qual as iterações sobre as colunas de uma matriz m x n acontecem apenas
+até \(m - 1\) colunas se m \(\leq\) n.~A explicação para isso é esta: a
+cada iteração, o algoritmo seleciona a coluna seguinte e zera todos os
+valores abaixo da diagonal da matriz nessa coluna, ou seja, abaixo do
+elemento \(A(j, j)\) da coluna \(j\). No entanto, caso a matriz seja
+quadrada ou possua mais colunas que linhas, na \(m\)-ésima iteração,
+esse elemento da diagonal será o último elemento daquela coluna, não
+havendo nada abaixo dele para ser zerado (para iterações seguintes, ele
+apenas não selecionará nada). Portanto, podemos simplesmente
+desconsiderar essas últimas iterações.
+
+Feita a explicação, abaixo está a função dessa 2° versão do algoritmo.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{97}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função da versão 2 do algoritmo de Householder para decomposição QR}
+\PY{k}{function}\PY{+w}{ }\PY{n+nf}{[U, R] = qr\PYZus{}House\PYZus{}v2}\PY{p}{(}A\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Pegando as dimensões da A}
+\PY{+w}{    }\PY{p}{[}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{size}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Inicializando a matriz U}
+\PY{+w}{    }\PY{n}{k}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{min}\PY{p}{(}\PY{n}{m}\PY{o}{\PYZhy{}}\PY{l+m+mi}{1}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{)}
+\PY{+w}{    }\PY{n}{U}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{zeros}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{k}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Para cada coluna...}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{k}
+\PY{+w}{        }\PY{c+c1}{// Pega o vetor que queremos projetar sobre um eixo}
+\PY{+w}{        }\PY{n}{x}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Escolhe a melhor das duas projeções possíveis}
+\PY{+w}{        }\PY{k}{if}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZgt{}}\PY{+w}{ }\PY{l+m+mi}{0}\PY{+w}{ }\PY{n+nb}{then}
+\PY{+w}{            }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{k}{else}
+\PY{+w}{            }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{p}{(}\PY{l+m+mi}{1}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{k}{end}
+\PY{+w}{        }\PY{c+c1}{// Calcula u normalizando x}
+\PY{+w}{        }\PY{n}{u}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{x}\PY{o}{/}\PY{n+nb}{norm}\PY{p}{(}\PY{n}{x}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Salva u na matriz U}
+\PY{+w}{        }\PY{n}{U}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{u}
+\PY{+w}{        }\PY{c+c1}{// Triangulariza a parte da matriz correspondente}
+\PY{+w}{        }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{)}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{u}\PY{o}{*}\PY{p}{(}\PY{n}{u}\PY{o}{\PYZsq{}}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{A}\PY{p}{(}\PY{n}{j}\PY{p}{:}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{j}\PY{p}{:}\PY{n}{n}\PY{p}{))}
+\PY{+w}{    }\PY{k}{end}
+\PY{+w}{    }\PY{c+c1}{// A R é a parte triangular superior da A}
+\PY{+w}{    }\PY{n}{R}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{triu}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    Por fim, vamos escrever uma função para construir a matriz \(Q\) dessa
+decomposição com base nos vetores presentes nas colunas da matriz \(U\)
+fornecida pelo algoritmo.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{98}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função para construir a matriz Q}
+\PY{k}{function}\PY{+w}{ }[Q]\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nf}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}U\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Pegando as dimensões da U}
+\PY{+w}{    }\PY{p}{[}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{n}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{size}\PY{p}{(}\PY{n}{U}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Inicializando Q como a identidade}
+\PY{+w}{    }\PY{n}{Q}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{m}\PY{p}{)}
+
+\PY{+w}{    }\PY{c+c1}{// Para cada vetor em U...}
+\PY{+w}{    }\PY{k}{for}\PY{+w}{ }\PY{n}{j}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{1}\PY{p}{:}\PY{n}{n}
+\PY{+w}{        }\PY{c+c1}{// Pega a coluna da matriz}
+\PY{+w}{        }\PY{n}{uj}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{U}\PY{p}{(:,}\PY{+w}{ }\PY{n}{j}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Calcula a matriz de Householder}
+\PY{+w}{        }\PY{n}{Qj}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{n}{m}\PY{p}{,}\PY{+w}{ }\PY{n}{m}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{2}\PY{o}{*}\PY{n}{uj}\PY{o}{*}\PY{n}{uj}\PY{o}{\PYZsq{}}
+\PY{+w}{        }\PY{c+c1}{// Multiplica à direita da Q}
+\PY{+w}{        }\PY{n}{Q}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{Q}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n}{Qj}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \hypertarget{item-4.1}{%
+\subsection{Item 4.1)}\label{item-4.1}}
+
+Vamos testar a precisão desse método em comparação com os anteriores.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{99}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Calculando a U e a R do método de Householder}
+\PY{p}{[}\PY{n}{U1HH1}\PY{p}{,}\PY{+w}{ }\PY{n}{R1HH1}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v1}\PY{p}{(}\PY{n}{A1}\PY{p}{);}
+\PY{p}{[}\PY{n}{U1HH2}\PY{p}{,}\PY{+w}{ }\PY{n}{R1HH2}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{A1}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a matriz Q de Householder}
+\PY{n}{Q1HH1}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U1HH1}\PY{p}{);}
+\PY{n}{Q1HH2}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U1HH2}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{*}\PY{n}{R1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1}\PY{o}{*}\PY{n}{RM1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1HH1}\PY{o}{*}\PY{n}{R1HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1HH2}\PY{o}{*}\PY{n}{R1HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{2}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{2}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1HH1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q1HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q1HH2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q1HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   1.776D-15
+
+  "Gram-Schmidt modificado"
+
+   1.776D-15
+
+  "Householder 1"
+
+   1.111D-14
+
+  "Householder 2"
+
+   1.111D-14
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   2.292D-16
+
+  "Gram-Schmidt modificado"
+
+   2.292D-16
+
+  "Householder 1"
+
+   1.882D-15
+
+  "Householder 2"
+
+   1.882D-15
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{100}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{[}\PY{n}{U2HH1}\PY{p}{,}\PY{+w}{ }\PY{n}{R2HH1}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v1}\PY{p}{(}\PY{n}{A2}\PY{p}{);}
+\PY{p}{[}\PY{n}{U2HH2}\PY{p}{,}\PY{+w}{ }\PY{n}{R2HH2}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{A2}\PY{p}{);}
+
+\PY{n}{Q2HH1}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U2HH1}\PY{p}{);}
+\PY{n}{Q2HH2}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U2HH2}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{*}\PY{n}{R2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2}\PY{o}{*}\PY{n}{RM2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2HH1}\PY{o}{*}\PY{n}{R2HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2HH2}\PY{o}{*}\PY{n}{R2HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2HH1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q2HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{4}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q2HH2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q2HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{4}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   1.891D-15
+
+  "Gram-Schmidt modificado"
+
+   1.891D-15
+
+  "Householder 1"
+
+   2.722D-14
+
+  "Householder 2"
+
+   2.722D-14
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   2.562D-16
+
+  "Gram-Schmidt modificado"
+
+   2.562D-16
+
+  "Householder 1"
+
+   2.144D-15
+
+  "Householder 2"
+
+   2.144D-15
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{101}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{p}{[}\PY{n}{U3HH1}\PY{p}{,}\PY{+w}{ }\PY{n}{R3HH1}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v1}\PY{p}{(}\PY{n}{A3}\PY{p}{);}
+\PY{p}{[}\PY{n}{U3HH2}\PY{p}{,}\PY{+w}{ }\PY{n}{R3HH2}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{A3}\PY{p}{);}
+
+\PY{n}{Q3HH1}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U3HH1}\PY{p}{);}
+\PY{n}{Q3HH2}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{U3HH2}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{*}\PY{n}{R3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM3}\PY{o}{*}\PY{n}{RM3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3HH1}\PY{o}{*}\PY{n}{R3HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3HH2}\PY{o}{*}\PY{n}{R3HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{A3}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM3}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM3}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 1\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3HH1}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q3HH1}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder 2\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{Q3HH2}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{Q3HH2}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   8.882D-16
+
+  "Gram-Schmidt modificado"
+
+   1.776D-15
+
+  "Householder 1"
+
+   1.308D-14
+
+  "Householder 2"
+
+   1.308D-14
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   6.279D-16
+
+  "Gram-Schmidt modificado"
+
+   5.514D-16
+
+  "Householder 1"
+
+   1.404D-15
+
+  "Householder 2"
+
+   1.404D-15
+    \end{Verbatim}
+
+    Assim, observa-se que o método de decomposição \(QR\) de Householder tem
+uma precisão bem semelhante aos métodos de Gram-Schmidt.
+
+    \hypertarget{item-4.2}{%
+\subsection{Item 4.2)}\label{item-4.2}}
+
+\hypertarget{matriz-muxe1gica-7x7}{%
+\subsubsection{1. Matriz mágica 7x7}\label{matriz-muxe1gica-7x7}}
+
+A seguir, testaremos nossas funções com algumas matrizes especiais,
+geralmente instáveis. Começaremos com uma matriz mágica 7x7, na qual as
+somas dos elementos de cada linha, coluna e diagonal é a mesma.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{102}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{M1}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{testmatrix}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{magi\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ M1  =
+   30.   39.   48.   1.    10.   19.   28.
+   38.   47.   7.    9.    18.   27.   29.
+   46.   6.    8.    17.   26.   35.   37.
+   5.    14.   16.   25.   34.   36.   45.
+   13.   15.   24.   33.   42.   44.   4.
+   21.   23.   32.   41.   43.   3.    12.
+   22.   31.   40.   49.   2.    11.   20.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{103}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Calculando a decomposição QR pelos métodos de Gram\PYZhy{}Schmidt}
+\PY{p}{[}\PY{n}{QM1GS}\PY{p}{,}\PY{+w}{ }\PY{n}{RM1GS}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{M1}\PY{p}{);}
+\PY{p}{[}\PY{n}{QM1GSM}\PY{p}{,}\PY{+w}{ }\PY{n}{RM1GSM}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{M1}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR pelo método de Householder}
+\PY{p}{[}\PY{n}{UM1HH}\PY{p}{,}\PY{+w}{ }\PY{n}{RM1HH}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{M1}\PY{p}{);}
+\PY{n}{QM1HH}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{UM1HH}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR com a função do Scilab}
+\PY{p}{[}\PY{n}{QM1Sci}\PY{p}{,}\PY{+w}{ }\PY{n}{RM1Sci}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{qr}\PY{p}{(}\PY{n}{M1}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1GS}\PY{o}{*}\PY{n}{RM1GS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1GSM}\PY{o}{*}\PY{n}{RM1GSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1HH}\PY{o}{*}\PY{n}{RM1HH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1Sci}\PY{o}{*}\PY{n}{RM1Sci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M1}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1GS}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1GS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1GSM}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1GSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1HH}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1HH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM1Sci}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM1Sci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   7.105D-15
+
+  "Gram-Schmidt modificado"
+
+   1.029D-14
+
+  "Householder"
+
+   5.506D-14
+
+  "Scilab"
+
+   9.110D-14
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   1.574D-15
+
+  "Gram-Schmidt modificado"
+
+   1.017D-15
+
+  "Householder"
+
+   6.063D-16
+
+  "Scilab"
+
+   6.171D-16
+    \end{Verbatim}
+
+    Parece que todos os métodos obtiveram resultados bem precisos para
+ortogonalizar essa matriz mágica.
+
+\hypertarget{matriz-de-hilbert-7x7}{%
+\subsubsection{2. Matriz de Hilbert 7x7}\label{matriz-de-hilbert-7x7}}
+
+Agora, vamos testar com a inversa de uma matriz de Hilbert, cuja
+definição é a seguinte para cada elemento \((i, j)\):
+
+\[
+H_{i, j} = \dfrac{1}{i+j-1}
+\]
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{104}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{H}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{testmatrix}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{hilb\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ H  =
+   49.     -1176.      8820.      -29400.      48510.     -38808.      12012.
+  -1176.    37632.    -317520.     1128960.   -1940400.    1596672.   -504504.
+   8820.   -317520.    2857680.   -10584000.   18711000.  -15717240.   5045040.
+  -29400.   1128960.  -10584000.   40320000.  -72765000.   62092800.  -20180160.
+   48510.  -1940400.   18711000.  -72765000.   1.334D+08  -1.153D+08   37837800.
+  -38808.   1596672.  -15717240.   62092800.  -1.153D+08   1.006D+08  -33297264.
+   12012.  -504504.    5045040.   -20180160.   37837800.  -33297264.   11099088.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{105}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Calculando a decomposição QR pelos métodos de Gram\PYZhy{}Schmidt}
+\PY{p}{[}\PY{n}{QHGS}\PY{p}{,}\PY{+w}{ }\PY{n}{RHGS}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{H}\PY{p}{);}
+\PY{p}{[}\PY{n}{QHGSM}\PY{p}{,}\PY{+w}{ }\PY{n}{RHGSM}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{H}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR pelo método de Householder}
+\PY{p}{[}\PY{n}{UHHH}\PY{p}{,}\PY{+w}{ }\PY{n}{RHHH}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{H}\PY{p}{);}
+\PY{n}{QHHH}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{UHHH}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR com a função do Scilab}
+\PY{p}{[}\PY{n}{QHSci}\PY{p}{,}\PY{+w}{ }\PY{n}{RHSci}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{qr}\PY{p}{(}\PY{n}{H}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHGS}\PY{o}{*}\PY{n}{RHGS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{H}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHGSM}\PY{o}{*}\PY{n}{RHGSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{H}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHHH}\PY{o}{*}\PY{n}{RHHH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{H}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHSci}\PY{o}{*}\PY{n}{RHSci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{H}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHGS}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QHGS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHGSM}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QHGSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHHH}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QHHH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QHSci}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QHSci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{7}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{7}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   0.
+
+  "Gram-Schmidt modificado"
+
+   8.975D-09
+
+  "Householder"
+
+   0.0000001
+
+  "Scilab"
+
+   3.688D-08
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   0.9852109
+
+  "Gram-Schmidt modificado"
+
+   1.933D-09
+
+  "Householder"
+
+   1.447D-15
+
+  "Scilab"
+
+   3.746D-16
+    \end{Verbatim}
+
+    Curiosamente, o método de Gram-Schmidt normal obteve precisão máxima no
+quesito da decomposição da matriz \(H\), mas ficou com um erro muito
+grande na ortogonalidade da matriz \(Q\). Isso provavelmente ocorre
+devido a sua abordagem direta e simples na decomposição da matriz e ao
+fato de ela não preservar exatamente a ortogonalidade entre as colunas
+de \(Q\), especialmente em matrizes mal-condicionadas como essa.
+
+Com relação ao método modificado, seus resultados ficaram com uma
+precisão razoável, melhor que a do método normal. Por ser uma melhoria,
+o algoritmo atualizado geralmente mantém a precisão da decomposição da
+matriz e visa melhorar a ortogonalidade de \(Q\).
+
+Olhando para o Householder, ele obteve o resultado inverso do
+Gram-Schmidt: sua precisão na decomposição da \(H\) não foi tão boa, mas
+a ortogonalidade da \(Q\) obtida ficou muito alta. Uma possível razão
+para isso é que esse método preserva a ortogonalidade exata entre as
+colunas de \(Q\), mesmo com a decomposição não sendo tão precisa.
+
+Por fim, a função do Scilab ficou com resultados bons nos dois quesitos.
+
+\hypertarget{matriz-muxe1gica-6x6}{%
+\subsubsection{3. Matriz mágica 6x6}\label{matriz-muxe1gica-6x6}}
+
+Por fim, vamos testar com outra matriz mágica, mas agora 6x6.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{106}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{M2}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{testmatrix}\PY{p}{(}\PY{l+s}{\PYZsq{}}\PY{l+s}{magi\PYZsq{}}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{6}\PY{p}{)}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ M2  =
+   35.   1.    6.    26.   19.   24.
+   3.    32.   7.    21.   23.   25.
+   31.   9.    2.    22.   27.   20.
+   8.    28.   33.   17.   10.   15.
+   30.   5.    34.   12.   14.   16.
+   4.    36.   29.   13.   18.   11.
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{107}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Calculando a decomposição QR pelos métodos de Gram\PYZhy{}Schmidt}
+\PY{p}{[}\PY{n}{QM2GS}\PY{p}{,}\PY{+w}{ }\PY{n}{RM2GS}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GS}\PY{p}{(}\PY{n}{M2}\PY{p}{);}
+\PY{p}{[}\PY{n}{QM2GSM}\PY{p}{,}\PY{+w}{ }\PY{n}{RM2GSM}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{M2}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR pelo método de Householder}
+\PY{p}{[}\PY{n}{UM2HH}\PY{p}{,}\PY{+w}{ }\PY{n}{RM2HH}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}House\PYZus{}v2}\PY{p}{(}\PY{n}{M2}\PY{p}{);}
+\PY{n}{QM2HH}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{constroi\PYZus{}Q\PYZus{}house}\PY{p}{(}\PY{n}{UM2HH}\PY{p}{);}
+
+\PY{c+c1}{// Calculando a decomposição QR com a função do Scilab}
+\PY{p}{[}\PY{n}{QM2Sci}\PY{p}{,}\PY{+w}{ }\PY{n}{RM2Sci}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{qr}\PY{p}{(}\PY{n}{M2}\PY{p}{);}
+
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q*R \PYZhy{} A ================\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2GS}\PY{o}{*}\PY{n}{RM2GS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2GSM}\PY{o}{*}\PY{n}{RM2GSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2HH}\PY{o}{*}\PY{n}{RM2HH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2Sci}\PY{o}{*}\PY{n}{RM2Sci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{M2}\PY{p}{))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}=============== Q\PYZca{}T*Q \PYZhy{} I ===============\PYZdq{}}\PY{p}{)}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2GS}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2GS}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{6}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Gram\PYZhy{}Schmidt modificado\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2GSM}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2GSM}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{6}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Householder\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2HH}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2HH}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{6}\PY{p}{)))}
+\PY{n+nb}{disp}\PY{p}{(}\PY{l+s}{\PYZdq{}Scilab\PYZdq{}}\PY{p}{,}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{QM2Sci}\PY{o}{\PYZsq{}}\PY{o}{*}\PY{n}{QM2Sci}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n+nb}{eye}\PY{p}{(}\PY{l+m+mi}{6}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{6}\PY{p}{)))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+  "=============== Q*R - A ================"
+
+  "Gram-Schmidt"
+
+   7.957D-15
+
+  "Gram-Schmidt modificado"
+
+   7.960D-15
+
+  "Householder"
+
+   1.750D-14
+
+  "Scilab"
+
+   4.101D-14
+
+  "=============== Q\^{}T*Q - I ==============="
+
+  "Gram-Schmidt"
+
+   0.9965096
+
+  "Gram-Schmidt modificado"
+
+   0.9374063
+
+  "Householder"
+
+   1.166D-15
+
+  "Scilab"
+
+   6.629D-16
+    \end{Verbatim}
+
+    Diferentemente da matriz mágica 7x7 testada anteriormente, essa 6x6
+trouxe alguns problemas para nossos algoritmos. Isso se deve à peculiar
+característica dessa classe de matrizes de que seus espécimes de ordem
+ímpar são bem-condicionados, enquanto que os de ordem par são
+mal-condicionados.
+
+Todos os métodos obtiveram aproximações boas na decomposição da matriz
+em \(Q\) e \(R\).
+
+No entanto, o Gram-Schmidt não obteve sucesso na ortogonalidade da
+\(Q\), com ambas as versões ficando com erros altos. Uma possível causa
+para isso é a falta de robustez do método de Gram-Schmidt para garantir
+a ortogonalidade exata entre as colunas de \(Q\) em comparação com os
+outros métodos, especialmente com matrizes mal-condicionadas,
+introduzindo erros numéricos que afetam essa ortogonalidade.
+
+Por outro lado, tanto o método de Householder quanto o do Scilab
+conseguiram resultados muito bons nesse quesito.
+
+\hypertarget{exercuxedcio-5}{%
+\section{Exercício 5}\label{exercuxedcio-5}}
+
+Por último, vamos usar a decomposição \(QR\) para encontrar os
+autovalores de uma matriz simétrica. A função para isso está a seguir.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{108}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Função para calcular os autovalores de uma matriz por meio da decomposição QR}
+\PY{k}{function}\PY{+w}{ }[S]\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nf}{espectro}\PY{p}{(}A, tol\PY{p}{)}
+\PY{+w}{    }\PY{c+c1}{// Inicializando os vetores atual e anterior distantes para garantir a entrada no loop}
+\PY{+w}{    }\PY{n}{S}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{p}{[}\PY{n+no}{\PYZpc{}inf}\PY{p}{]}
+\PY{+w}{    }\PY{n}{S0}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{p}{[}\PY{l+m+mi}{0}\PY{p}{]}
+
+\PY{+w}{    }\PY{c+c1}{// Enquanto o vetor não convergir...}
+\PY{+w}{    }\PY{k}{while}\PY{+w}{ }\PY{n+nb}{norm}\PY{p}{(}\PY{n}{S}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{n}{S0}\PY{p}{,}\PY{+w}{ }\PY{l+s}{\PYZsq{}}\PY{l+s}{inf\PYZsq{}}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZgt{}}\PY{+w}{ }\PY{n}{tol}
+\PY{+w}{        }\PY{c+c1}{// Salva o valor anterior}
+\PY{+w}{        }\PY{n}{S0}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{S}
+\PY{+w}{        }\PY{c+c1}{// Calcula a decomposição QR da matriz}
+\PY{+w}{        }\PY{p}{[}\PY{n}{Q}\PY{p}{,}\PY{+w}{ }\PY{n}{R}\PY{p}{]}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{qr\PYZus{}GSM}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{        }\PY{c+c1}{// Substitui ela por RQ}
+\PY{+w}{        }\PY{n}{A}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{R}\PY{o}{*}\PY{n}{Q}
+\PY{+w}{        }\PY{c+c1}{// Pega a diagonal dessa matriz como os autovalores}
+\PY{+w}{        }\PY{n}{S}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{diag}\PY{p}{(}\PY{n}{A}\PY{p}{)}
+\PY{+w}{    }\PY{k}{end}
+\PY{k}{endfunction}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+Warning : redefining function: espectro                . Use funcprot(0) to
+avoid this message
+    \end{Verbatim}
+
+    Vamos testar com algumas matrizes.
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{109}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{c+c1}{// Gerando uma matriz simétrica}
+\PY{n}{A4}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{20}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{3}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{3}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{;}
+\PY{n}{A4}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{((}\PY{n}{A4}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{A4}\PY{o}{\PYZsq{}}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{+w}{ }
+\PY{c+c1}{// Vendo quais são seus autovalores}
+\PY{n}{autovalores}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{spec}\PY{p}{(}\PY{n}{A4}\PY{p}{)}
+
+\PY{c+c1}{// Calculando esses autovalores com nossa função}
+\PY{n}{S4}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{espectro}\PY{p}{(}\PY{n}{A4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{10}\PYZca{}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{8}\PY{p}{))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A4  =
+   5.  -5.  -1.
+  -5.   4.   2.
+  -1.   2.  -4.
+ autovalores  =
+  -4.4768213
+  -0.3632067
+   9.8400280
+ S4  =
+   9.8400280
+  -4.4768213
+  -0.3632067
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{110}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A5}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{20}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{4}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{4}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{;}
+\PY{n}{A5}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{((}\PY{n}{A5}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{A5}\PY{o}{\PYZsq{}}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{+w}{ }
+\PY{n}{autovalores}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{spec}\PY{p}{(}\PY{n}{A5}\PY{p}{)}
+
+\PY{n}{S5}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{espectro}\PY{p}{(}\PY{n}{A5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{10}\PYZca{}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{7}\PY{p}{))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A5  =
+  -10.  -2.  -7.  -1.
+  -2.    4.   1.   1.
+  -7.    1.  -7.  -3.
+  -1.    1.  -3.  -5.
+ autovalores  =
+  -16.316859
+  -5.5016052
+  -0.9370026
+   4.7554671
+ S5  =
+  -16.316859
+  -5.5016049
+   4.7554669
+  -0.9370026
+    \end{Verbatim}
+
+    \begin{tcolorbox}[breakable, size=fbox, boxrule=1pt, pad at break*=1mm,colback=cellbackground, colframe=cellborder]
+\prompt{In}{incolor}{111}{\boxspacing}
+\begin{Verbatim}[commandchars=\\\{\}]
+\PY{n}{A6}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{l+m+mi}{20}\PY{+w}{ }\PY{o}{*}\PY{+w}{ }\PY{n+nb}{rand}\PY{p}{(}\PY{l+m+mi}{5}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{5}\PY{p}{)}\PY{+w}{ }\PY{o}{\PYZhy{}}\PY{+w}{ }\PY{l+m+mi}{10}\PY{p}{;}
+\PY{n}{A6}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{round}\PY{p}{((}\PY{n}{A6}\PY{+w}{ }\PY{o}{+}\PY{+w}{ }\PY{n}{A6}\PY{o}{\PYZsq{}}\PY{p}{)}\PY{o}{/}\PY{l+m+mi}{2}\PY{p}{)}
+\PY{+w}{ }
+\PY{n}{autovalores}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n+nb}{spec}\PY{p}{(}\PY{n}{A6}\PY{p}{)}
+
+\PY{n}{S6}\PY{+w}{ }\PY{p}{=}\PY{+w}{ }\PY{n}{espectro}\PY{p}{(}\PY{n}{A6}\PY{p}{,}\PY{+w}{ }\PY{l+m+mi}{10}\PYZca{}\PY{p}{(}\PY{o}{\PYZhy{}}\PY{l+m+mi}{6}\PY{p}{))}
+\end{Verbatim}
+\end{tcolorbox}
+
+    \begin{Verbatim}[commandchars=\\\{\}]
+ A6  =
+   9.   1.   5.   2.   5.
+   1.  -9.   1.   4.  -1.
+   5.   1.   5.   4.  -1.
+   2.   4.   4.  -7.  -3.
+   5.  -1.  -1.  -3.  -6.
+ autovalores  =
+  -12.599706
+  -9.3512946
+  -4.0616507
+   4.2589108
+   13.753740
+ S6  =
+   13.753740
+  -12.599706
+  -9.3512946
+   4.2589013
+  -4.0616413
+    \end{Verbatim}
+
+    Nossa função está funcionando perfeitamente!
+
+
+    % Add a bibliography block to the postdoc
+    
+    
+    
+\end{document}
